@@ -2,6 +2,7 @@
 import DogsIndex from "./DogsIndex.vue";
 import MyModal from "./MyModal.vue";
 import DogsShow from "./DogsShow.vue";
+import axios from "axios";
 
 export default {
   components: {
@@ -24,6 +25,25 @@ data: function () {
         this.currentDog = dog;
         this.isDogsShowVisible = true;
     },
+
+    handleUpdateDog: function (id, params) {
+      console.log("handleUpdateDog", id, params);
+      axios.patch(`http://127.0.0.1:5000/dogs/${id}.json`, params).then((response) => {
+        console.log("dogs update", response);
+        this.dogs = this.dogs.map((dog) => {
+          if (dog.id === response.data.id) {
+            return response.data;
+          } else {
+            return dog;
+          }
+        });
+        this.handleClose();
+      })
+      .catch((error) => {
+        console.log("dogs update error", error.response);
+      });
+    },
+
     handleClose: function () {
         this.isDogsShowVisible = false;
     },
@@ -34,7 +54,7 @@ data: function () {
   <main>
     <DogsIndex v-bind:dogs="dogs" v-on:showDog="handleShowDog" />
     <MyModal v-bind:show="isDogsShowVisible" v-on:close="handleClose">
-        <DogsShow v-bind:dog="currentDog" />
+        <DogsShow v-bind:dog="currentDog" v-on:updateDog="handleUpdateDog" />
     </MyModal>
   </main>
 </template>
