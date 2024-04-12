@@ -13,6 +13,7 @@ export default {
       <h2>{{ dog.name }}</h2>
       <p>{{ dog.age }}</p>
       <p>{{ dog.breed }}</p>
+      <button v-on:click="$emit('showDog', dog)">More Info</button>
     </div>
   </div>
 </template>
